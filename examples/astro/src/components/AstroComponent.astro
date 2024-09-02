@@ -1,0 +1,58 @@
+<fieldset>
+    <legend>Astro Counter</legend>
+
+	<p id="resource-state">Resource state: pending</p>
+    <p id="resource-value">Resource value:</p>
+
+    <p id="count"></p>
+    <button id="inc">Increment</button>
+    <button id="dec">Decrement</button>
+	<input type="text" id="name" />
+</fieldset>
+
+
+<script>
+	import { effect } from "lager/effect";
+	import { counterStore } from "../stores/counter";
+	import { nameStore } from "../stores/name";
+	import { resourceStore } from "../stores/resource";
+
+	const $incBtn = document.getElementById("inc") as HTMLButtonElement;
+	const $decBtn = document.getElementById("dec") as HTMLButtonElement;
+	const $countP = document.getElementById("count") as HTMLParagraphElement;
+	const $nameInp = document.getElementById("name") as HTMLInputElement;
+	const $resourceStateP = document.getElementById("resource-state") as HTMLParagraphElement;
+	const $resourceValueP = document.getElementById("resource-value") as HTMLParagraphElement;
+
+	$incBtn.addEventListener("click", () => {
+		counterStore.set(counterStore.get() + 1);
+	});
+
+	$decBtn.addEventListener("click", () => {
+		counterStore.set(counterStore.get() - 1);
+	});
+
+	$nameInp.addEventListener("input", () => {
+		nameStore.set($nameInp.value);
+	});
+
+	effect(() => {
+		$resourceStateP.textContent = `Resource state: ${resourceStore.state.get()}`;
+	});
+
+	effect(() => {
+		const resource = resourceStore.value.get();
+
+		if (resource) {
+			$resourceValueP.textContent = `Resource value: ${resource}`;
+		}
+	});
+
+	effect(() => {
+		$nameInp.value = nameStore.get();
+	});
+
+	effect(() => {
+		$countP.textContent = counterStore.get().toString();
+	});
+</script>

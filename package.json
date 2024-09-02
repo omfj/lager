@@ -1,0 +1,11 @@
+{
+  "name": "@lager/mono",
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "packageManager": "pnpm@8.7.0",
+  "devDependencies": {
+    "turbo": "^2.1.1",
+    "typescript": "^5.5.4"
+  }
+}

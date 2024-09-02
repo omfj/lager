@@ -1,0 +1,22 @@
+{
+  "name": "lager",
+  "version": "0.0.1",
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/react.ts",
+    "./effect": "./src/effect.ts"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "signal-polyfill": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.4"
+  }
+}
