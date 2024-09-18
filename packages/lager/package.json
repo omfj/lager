@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "exports": {
     ".": "./src/index.ts",
+    "./query": "./src/query.ts",
     "./react": "./src/react.ts",
     "./effect": "./src/effect.ts"
   },
@@ -10,6 +11,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@tanstack/query-core": "^5.55.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "signal-polyfill": "^0.1.2"

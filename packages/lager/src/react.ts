@@ -28,6 +28,7 @@ export const useStore = <T>(store: Store<T>) => {
     },
     [store]
   );
+
   const getSnapshot = () => store.get();
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);

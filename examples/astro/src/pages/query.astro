@@ -1,0 +1,63 @@
+---
+import FetchInAnotherComponent from "../components/FetchInAnotherComponent.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+    <fieldset>
+        <legend>Query 1</legend>
+
+        <h1>Query</h1>
+
+        <p id="data">Data:</p>
+        <p id="isLoading">Is loading:</p>
+        <p id="error">Error:</p>
+        <p id="mutate-data">Mutate data:</p>
+
+        <button id="invalidate">Invalidate</button>
+        <button id="refetch">Refetch</button>
+    </fieldset>
+
+    <FetchInAnotherComponent />
+</BaseLayout>
+
+<script>
+    import { effect } from "lager/effect";
+    import { lager } from "../stores/lager";
+
+    const $data = document.getElementById("data") as HTMLParagraphElement;
+    const $isLoading = document.getElementById("isLoading") as HTMLParagraphElement;
+    const $error = document.getElementById("error") as HTMLParagraphElement;
+    const $mutateData = document.getElementById("mutate-data") as HTMLParagraphElement;
+    const $invalidateBtn = document.getElementById("invalidate") as HTMLButtonElement;
+    const $refetchBtn = document.getElementById("refetch") as HTMLButtonElement;
+
+    const { data, isLoading, error, refetch } = lager.query({
+        queryKey: ["api"],
+        queryFn: () => fetch("http://localhost:4321/api?wait=3000").then((res) => res.text())
+    })
+
+    // const { data: mutateData, mutate } = await lager.mutate({
+    //     mutationKey: ["mutate-api"],
+    //     mutationFn: () => fetch("http://localhost:4321/mutate").then((res) => res.text())
+    // })
+
+    $invalidateBtn.addEventListener("click", async () => {
+        console.log("Invalidate");
+        await lager.invalidateQueries({
+            queryKey: ["api"]
+        });
+    });
+
+    $refetchBtn.addEventListener("click", async () => {
+        console.log("Refetch");
+        await refetch();
+    });
+
+    effect(() => {
+        $data.textContent = `Data: ${data.get()}`;
+        $isLoading.textContent = `Is loading: ${isLoading.get()}`;
+        $error.textContent = `Error: ${error.get()}`;
+        $mutateData.textContent = `Mutate data: ${mutateData}`;
+    });
+</script>

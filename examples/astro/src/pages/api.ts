@@ -1,7 +1,10 @@
 import type { APIRoute } from "astro";
 
-export const GET: APIRoute = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+let count = 0;
 
-  return new Response("Hello from API");
+export const GET: APIRoute = async ({ url }) => {
+  const wait = Number(url.searchParams.get("wait") ?? 2000);
+  await new Promise((resolve) => setTimeout(resolve, wait));
+
+  return new Response(`Hello from API: ${count++}`);
 };
