@@ -5,8 +5,7 @@
     ".": "./src/index.ts",
     "./query": "./src/query.ts",
     "./react": "./src/react.ts",
-    "./effect": "./src/effect.ts",
-    "./memo": "./src/memo.ts"
+    "./effect": "./src/effect.ts"
   },
   "scripts": {
     "build": "tsc"
