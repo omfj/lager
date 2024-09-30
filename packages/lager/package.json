@@ -4,7 +4,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./query": "./src/query.ts",
-    "./react": "./src/react.ts",
+    "./signal-query": "./src/signal-query.ts",
     "./effect": "./src/effect.ts"
   },
   "scripts": {

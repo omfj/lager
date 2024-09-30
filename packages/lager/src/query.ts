@@ -1,102 +1,89 @@
+/**
+ * Implementation of @tanstackk/angular-query-experimental using `signal-polyfill`
+ *
+ * This implementation is a direct port of the original implementation, with the only difference being the use of `signal-polyfill` instead of Angular's signals.
+ *
+ * Credit goes to the original authors of the library.
+ *
+ * https://github.com/TanStack/query/blob/main/packages/angular-query-experimental/src/create-base-query.ts
+ */
+
 import { Signal } from "signal-polyfill";
 import {
-  type FetchQueryOptions,
-  type InvalidateOptions,
-  type InvalidateQueryFilters,
-  type MutationOptions,
-  MutationObserver,
-  QueryClient,
-  type QueryKey,
   notifyManager,
+  QueryClient,
+  QueryKey,
+  QueryObserver,
+  QueryObserverResult,
 } from "@tanstack/query-core";
-import { type CreateMutateFunction } from "./types";
+import { effect } from "./effect";
+import { CreateBaseQueryOptions, CreateBaseQueryResult } from "./types";
+import { signalProxy } from "./signal-proxy";
 
-export class LagerClient {
-  #queryClient: QueryClient;
-
-  constructor(queryClient?: QueryClient) {
-    this.#queryClient = queryClient ?? new QueryClient();
-  }
-
-  query<
+export function createBaseQuery<
+  TQueryFnData,
+  TError,
+  TData,
+  TQueryData,
+  TQueryKey extends QueryKey
+>(
+  queryClient: QueryClient,
+  options: CreateBaseQueryOptions<
     TQueryFnData,
-    TError = Error,
-    TData = TQueryFnData,
-    TQueryKey extends QueryKey = QueryKey,
-    TPageParam = never
-  >(
-    options: FetchQueryOptions<
-      TQueryFnData,
-      TError,
-      TData,
-      TQueryKey,
-      TPageParam
-    >
-  ) {
-    const state = new Signal.State<TData | null>(null);
-    const isLoading = new Signal.State<boolean>(true);
-    const error = new Signal.State<TError | null>(null);
+    TError,
+    TData,
+    TQueryData,
+    TQueryKey
+  >,
+  Observer: typeof QueryObserver
+): CreateBaseQueryResult<TData, TError> {
+  /**
+   * Signal that has the default options from query client applied
+   * computed() is used so signals can be inserted into the options
+   * making it reactive. Wrapping options in a function ensures embedded expressions
+   * are preserved and can keep being applied after signal changes
+   */
+  const defaultedOptionsSignal = new Signal.Computed(() => {
+    const defaultedOptions = queryClient.defaultQueryOptions(options);
+    defaultedOptions._optimisticResults = "optimistic";
+    return defaultedOptions;
+  });
 
-    const fetch = async () => {
-      isLoading.set(true);
-      try {
-        const result = await this.#queryClient.fetchQuery(options);
-        state.set(result);
-      } catch (e) {
-        error.set(e as TError);
-      }
-      isLoading.set(false);
-    };
+  const observer = new Observer<
+    TQueryFnData,
+    TError,
+    TData,
+    TQueryData,
+    TQueryKey
+  >(queryClient, defaultedOptionsSignal.get());
 
-    fetch();
+  const resultSignal = new Signal.State(
+    observer.getOptimisticResult(defaultedOptionsSignal.get())
+  );
 
-    return {
-      get data() {
-        return state.get();
-      },
-      get isLoading() {
-        return isLoading.get();
-      },
-      get error() {
-        return error.get();
-      },
-      refetch: fetch,
-    };
-  }
-
-  async invalidateQueries(
-    filters?: InvalidateQueryFilters,
-    options?: InvalidateOptions
-  ) {
-    await this.#queryClient.invalidateQueries(filters, options);
-  }
-
-  mutate<TData, TError = Error, TVariables = void, TContext = unknown>(
-    options: MutationOptions<TData, TError, TVariables, TContext>
-  ) {
-    const observer = new MutationObserver<TData, TError, TVariables, TContext>(
-      this.#queryClient,
-      options
-    );
-
-    const mutate: CreateMutateFunction<TData, TError, TVariables, TContext> = (
-      variables,
-      mutateOptions
-    ) => {
-      observer.mutate(variables, mutateOptions);
-    };
-    observer.setOptions(options);
-
-    const result = new Signal.State(observer.getCurrentResult());
-
-    observer.subscribe(() => {
-      notifyManager.batch((val) => result.set(val));
+  effect(() => {
+    const defaultedOptions = defaultedOptionsSignal.get();
+    observer.setOptions(defaultedOptions, {
+      // Do not notify on updates because of changes in the options because
+      // these changes should already be reflected in the optimistic result.
+      listeners: false,
     });
 
-    return {
-      ...result.get(),
-      mutate,
-      mutateAsync: result.get().mutate,
-    };
-  }
+    resultSignal.set(observer.getOptimisticResult(defaultedOptions));
+  });
+
+  // observer.trackResult is not used as this optimization is not needed for Angular
+  const unsubscribe = observer.subscribe(
+    notifyManager.batchCalls((state: QueryObserverResult<TData, TError>) => {
+      if (state.isError && !state.isFetching) {
+        throw state.error;
+      }
+      resultSignal.set(state);
+    })
+  );
+
+  return signalProxy(resultSignal) as unknown as CreateBaseQueryResult<
+    TData,
+    TError
+  >;
 }
