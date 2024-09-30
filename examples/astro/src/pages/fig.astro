@@ -1,0 +1,75 @@
+<p id="num">Num:</p>
+
+<button id="inc">Increment</button>
+<button id="dec">Decrement</button>
+
+<div id="container"></div>
+
+<style>
+    #container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.25rem;
+        background-color: #f0f0f0;
+    }
+</style>
+
+<script>
+    import { Signal } from "lager";
+    import { effect } from "lager/effect";
+    import { createMemo } from "lager/memo";
+
+    const $num = document.getElementById("num") as HTMLParagraphElement;
+    const $container = document.getElementById("container") as HTMLDivElement;
+    const $incBtn = document.getElementById("inc") as HTMLButtonElement;
+    const $decBtn = document.getElementById("dec") as HTMLButtonElement;
+
+    const num = new Signal.State(1);
+
+    $incBtn.addEventListener("click", () => {
+        num.set(num.get() + 1);
+    });
+
+    $decBtn.addEventListener("click", () => {
+        if (num.get() <= 0) return;
+        num.set(num.get() - 1);
+    });
+
+    const fibonacci = (n: number): number => {
+        if (n <= 1) {
+            return n;
+        }
+
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    };
+
+    // BAD:
+    // const fib = () => {
+    //     console.log("calculating fibonacci");
+    //     return fibonacci(num.value);
+    // };
+    // GOOD:
+    const fib = createMemo(() => {
+        console.log("calculating fibonacci");
+        return fibonacci(num.get())
+    });
+
+    const updateContainer = () => {
+        const n = num.get();
+        $num.textContent = `Num: ${n}`;
+        $container.innerHTML = "";
+        Array.from({ length: 9 }).forEach(() => {
+            const $el = document.createElement("p");
+            // BAD:
+            // $el.textContent = fib().toString();
+            // GOOD:
+            $el.textContent = fib.value.toString();
+            $container.appendChild($el);
+        });
+    };
+
+    effect(() => {
+        updateContainer();
+    });
+
+</script>

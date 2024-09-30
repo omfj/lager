@@ -19,7 +19,7 @@
     const $invalidate = document.getElementById("invalidate-foo") as HTMLButtonElement;
     const $refetch = document.getElementById("refetch-foo") as HTMLButtonElement;
 
-    const { data, isLoading, error, refetch } = lager.query({
+    const apiQuery = lager.query({
         queryKey: ["api"],
         queryFn: () => fetch("http://localhost:4321/api?wait=3000").then((res) => res.text())
     })
@@ -33,18 +33,12 @@
 
     $refetch.addEventListener("click", async () => {
         console.log("Refetch");
-        await refetch();
+        await apiQuery.refetch();
     });
 
     effect(() => {
-        $data.textContent = `Data: ${data.get()}`;
-    });
-
-    effect(() => {
-        $isLoading.textContent = `Is loading: ${isLoading.get()}`;
-    });
-
-    effect(() => {
-        $error.textContent = `Error: ${error.get()}`;
+        $data.textContent = `Data: ${apiQuery.data}`;
+        $isLoading.textContent = `Is loading: ${apiQuery.isLoading}`;
+        $error.textContent = `Error: ${apiQuery.error}`;
     });
 </script>

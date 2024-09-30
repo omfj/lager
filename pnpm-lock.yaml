@@ -59,6 +59,9 @@ importers:
       signal-polyfill:
         specifier: ^0.1.2
         version: 0.1.2
+      signal-utils:
+        specifier: ^0.18.0
+        version: 0.18.0(signal-polyfill@0.1.2)
     devDependencies:
       '@types/react':
         specifier: ^18.3.5
@@ -3128,6 +3131,14 @@ packages:
 
   /signal-polyfill@0.1.2:
     resolution: {integrity: sha512-HT9d+L9NMiTzMxb/tU2Baym6129ROyRETSjvchvSkQa7wN0+SrG/IUlsaBLqKn2c+4mlze6CgQBEvgBjxOpiaQ==}
+    dev: false
+
+  /signal-utils@0.18.0(signal-polyfill@0.1.2):
+    resolution: {integrity: sha512-qsUIfxv6pbXegnm6NCZ/+SzLlkE3jMvE5y9Nzj8nWifff3wUiteFOFgB/VdZT7oYQ1NpUuTQS0pfeiYRjEAFMg==}
+    peerDependencies:
+      signal-polyfill: ^0.1.0
+    dependencies:
+      signal-polyfill: 0.1.2
     dev: false
 
   /simple-swizzle@0.2.2:

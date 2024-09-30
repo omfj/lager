@@ -32,7 +32,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const $invalidateBtn = document.getElementById("invalidate") as HTMLButtonElement;
     const $refetchBtn = document.getElementById("refetch") as HTMLButtonElement;
 
-    const { data, isLoading, error, refetch } = lager.query({
+    const apiQuery = lager.query({
         queryKey: ["api"],
         queryFn: () => fetch("http://localhost:4321/api?wait=3000").then((res) => res.text())
     })
@@ -51,13 +51,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     $refetchBtn.addEventListener("click", async () => {
         console.log("Refetch");
-        await refetch();
+        await apiQuery.refetch();
     });
 
     effect(() => {
-        $data.textContent = `Data: ${data.get()}`;
-        $isLoading.textContent = `Is loading: ${isLoading.get()}`;
-        $error.textContent = `Error: ${error.get()}`;
-        $mutateData.textContent = `Mutate data: ${mutateData}`;
+        $data.textContent = `Data: ${apiQuery.data}`;
+        $isLoading.textContent = `Is loading: ${apiQuery.isLoading}`;
+        $error.textContent = `Error: ${apiQuery.error}`;
+        // $mutateData.textContent = `Mutate data: ${mutateData}`;
     });
 </script>

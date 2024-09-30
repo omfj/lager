@@ -51,9 +51,15 @@ export class LagerClient {
     fetch();
 
     return {
-      data: state,
-      isLoading,
-      error,
+      get data() {
+        return state.get();
+      },
+      get isLoading() {
+        return isLoading.get();
+      },
+      get error() {
+        return error.get();
+      },
       refetch: fetch,
     };
   }

@@ -3,7 +3,7 @@ import { Signal } from "signal-polyfill";
 export type Store<T> = Signal.State<T>;
 
 export const createStore = <T>(initialState: T): Store<T> => {
-  return new Signal.State(initialState);
+  return new Signal.State<T>(initialState);
 };
 
 export type ResourceState = "pending" | "success" | "error";
