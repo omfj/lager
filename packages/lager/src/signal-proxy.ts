@@ -9,7 +9,7 @@
  */
 
 import { Signal } from "signal-polyfill";
-import { MapToSignals } from "./types";
+import { type MapToSignals } from "./types";
 
 /**
  * Exposes fields of an object passed via an Angular `Signal` as `Computed` signals.

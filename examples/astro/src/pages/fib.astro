@@ -1,62 +1,61 @@
 <p id="num">Num:</p>
 
-<button id="inc">Increment</button>
-<button id="dec">Decrement</button>
+<button id="inc" class="rounded-lg border px-2 py-1">Increment</button>
+<button id="dec" class="rounded-lg border px-2 py-1">Decrement</button>
 
 <div id="container"></div>
 
 <style>
-    #container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.25rem;
-        background-color: #f0f0f0;
-    }
+  #container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    background-color: #f0f0f0;
+  }
 </style>
 
 <script>
-    import { Signal } from "lager";
-    import { effect } from "lager/effect";
+  import { Signal } from "lager";
+  import { effect } from "lager/effect";
 
-    const $num = document.getElementById("num") as HTMLParagraphElement;
-    const $container = document.getElementById("container") as HTMLDivElement;
-    const $incBtn = document.getElementById("inc") as HTMLButtonElement;
-    const $decBtn = document.getElementById("dec") as HTMLButtonElement;
+  const $num = document.getElementById("num") as HTMLParagraphElement;
+  const $container = document.getElementById("container") as HTMLDivElement;
+  const $incBtn = document.getElementById("inc") as HTMLButtonElement;
+  const $decBtn = document.getElementById("dec") as HTMLButtonElement;
 
-    const num = new Signal.State(1);
+  const num = new Signal.State(1);
 
-    $incBtn.addEventListener("click", () => {
-        num.set(num.get() + 1);
+  $incBtn.addEventListener("click", () => {
+    num.set(num.get() + 1);
+  });
+
+  $decBtn.addEventListener("click", () => {
+    if (num.get() <= 0) return;
+    num.set(num.get() - 1);
+  });
+
+  const fibonacci = (n: number): number => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  };
+
+  const fib = new Signal.Computed(() => {
+    console.log("calculating fibonacci");
+    return fibonacci(num.get());
+  });
+
+  const updateContainer = () => {
+    const n = num.get();
+    $num.textContent = `Num: ${n}`;
+    $container.innerHTML = "";
+    Array.from({ length: 9 }).forEach(() => {
+      const $el = document.createElement("p");
+      $el.textContent = fib.get().toString();
+      $container.appendChild($el);
     });
+  };
 
-    $decBtn.addEventListener("click", () => {
-        if (num.get() <= 0) return;
-        num.set(num.get() - 1);
-    });
-
-    const fibonacci = (n: number): number => {
-        if (n <= 1) return n;
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    };
-
-    const fib = new Signal.Computed(() => {
-        console.log("calculating fibonacci");
-        return fibonacci(num.get())
-    })
-
-    const updateContainer = () => {
-        const n = num.get();
-        $num.textContent = `Num: ${n}`;
-        $container.innerHTML = "";
-        Array.from({ length: 9 }).forEach(() => {
-            const $el = document.createElement("p");
-            $el.textContent = fib.get().toString();
-            $container.appendChild($el);
-        });
-    };
-
-    effect(() => {
-        updateContainer();
-    });
-
+  effect(() => {
+    updateContainer();
+  });
 </script>

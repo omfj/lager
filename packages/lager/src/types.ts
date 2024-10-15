@@ -9,11 +9,11 @@
  */
 
 import {
-  DefaultError,
-  QueryKey,
-  QueryObserverOptions,
-  QueryObserverResult,
-  OmitKeyof,
+  type DefaultError,
+  type QueryKey,
+  type QueryObserverOptions,
+  type QueryObserverResult,
+  type OmitKeyof,
 } from "@tanstack/query-core";
 import { Signal } from "signal-polyfill";
 

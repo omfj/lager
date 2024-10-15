@@ -1,34 +1,9 @@
-<main class="container py-10 mx-auto flex flex-col gap-2">
-    <p id="data">Data:</p>
-    <p id="status">Status:</p>
-    <p id="fetchStatus">Fetch status:</p>
+---
+import CountDisplay from "../components/CountDisplay.astro";
+import CountQuery from "../components/CountQuery.astro";
+---
 
-    <button class="bg-blue-500 text-white px-4 py-2 rounded" id="invalidate">Invalidate</button>
-    <button class="bg-blue-500 text-white px-4 py-2 rounded" id="refetch">Refetch</button>
-</main>
-
-<script>
-    import { effect } from "lager/effect";
-    import { createBaseQuery } from "lager/query";
-    import { queryClient, queryObserver } from "../stores/query-client";
-
-    const $data = document.getElementById("data") as HTMLParagraphElement;
-    const $status = document.getElementById("status") as HTMLParagraphElement;
-    const $fetchStatus = document.getElementById("fetchStatus") as HTMLParagraphElement;
-    const $invalidateBtn = document.getElementById("invalidate") as HTMLButtonElement;
-    const $refetchBtn = document.getElementById("refetch") as HTMLButtonElement;
-
-    const { data, status, fetchStatus, refetch } = createBaseQuery(queryClient, {
-        queryKey: ["api"],
-        queryFn: () => fetch("http://localhost:4321/api/query?wait=3000").then((res) => res.text())
-    }, queryObserver)
-
-    $invalidateBtn.addEventListener("click", () => queryClient.invalidateQueries());
-    $refetchBtn.addEventListener("click", () => refetch());
-
-    effect(() => {
-        $data.textContent = `Data: ${data.get()}`;
-        $status.textContent = `Status: ${status.get()}`;
-        $fetchStatus.textContent = `Fetch status: ${fetchStatus.get()}`;
-    });
-</script>
+<div class="py-10 space-y-4">
+  <CountQuery />
+  <CountDisplay />
+</div>
