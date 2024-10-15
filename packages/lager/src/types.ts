@@ -14,6 +14,10 @@ import {
   type QueryObserverOptions,
   type QueryObserverResult,
   type OmitKeyof,
+  MutationObserverOptions,
+  MutationObserverResult,
+  Override,
+  MutateFunction,
 } from "@tanstack/query-core";
 import { Signal } from "signal-polyfill";
 
@@ -71,3 +75,55 @@ export type CreateBaseQueryResult<
   TState = QueryObserverResult<TData, TError>
 > = BaseQueryNarrowing<TData, TError> &
   MapToSignals<OmitKeyof<TState, keyof BaseQueryNarrowing, "safely">>;
+
+export interface SolidMutationOptions<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown
+> extends OmitKeyof<
+    MutationObserverOptions<TData, TError, TVariables, TContext>,
+    "_defaulted"
+  > {}
+
+export type CreateMutationOptions<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown
+> = SolidMutationOptions<TData, TError, TVariables, TContext>;
+
+export type CreateMutateFunction<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown
+> = (
+  ...args: Parameters<MutateFunction<TData, TError, TVariables, TContext>>
+) => void;
+
+export type CreateMutateAsyncFunction<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown
+> = MutateFunction<TData, TError, TVariables, TContext>;
+
+export type CreateBaseMutationResult<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = unknown,
+  TContext = unknown
+> = Override<
+  MutationObserverResult<TData, TError, TVariables, TContext>,
+  { mutate: CreateMutateFunction<TData, TError, TVariables, TContext> }
+> & {
+  mutateAsync: CreateMutateAsyncFunction<TData, TError, TVariables, TContext>;
+};
+
+export type CreateMutationResult<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = unknown,
+  TContext = unknown
+> = CreateBaseMutationResult<TData, TError, TVariables, TContext>;

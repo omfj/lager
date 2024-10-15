@@ -6,23 +6,14 @@ import {
 import { createBaseQuery } from "./create-base-query";
 import { type CreateBaseQueryOptions } from "./types";
 
-const queryObserver = QueryObserver;
-
 export function createQuery<
   TQueryFnData,
   TError,
   TData,
-  TQueryData,
   TQueryKey extends QueryKey
 >(
   queryClient: QueryClient,
-  options: CreateBaseQueryOptions<
-    TQueryFnData,
-    TError,
-    TData,
-    TQueryData,
-    TQueryKey
-  >
+  options: CreateBaseQueryOptions<TQueryFnData, TError, TData, TQueryKey>
 ) {
-  return createBaseQuery(queryClient, options, queryObserver);
+  return createBaseQuery(queryClient, options, QueryObserver);
 }
