@@ -1,7 +1,12 @@
 import { ComputedNode } from "./computed.js";
+import { EffectNode } from "./effect.js";
 import { SignalNode } from "./signal.js";
 
-type CurrentNode = ComputedNode<unknown> | SignalNode<unknown> | undefined;
+type CurrentNode =
+  | ComputedNode<unknown>
+  | SignalNode<unknown>
+  | EffectNode
+  | undefined;
 
 let currentNode: CurrentNode = undefined;
 
@@ -15,6 +20,10 @@ export function isComputed(node: CurrentNode): node is ComputedNode<unknown> {
 
 export function isSignal(node: CurrentNode): node is SignalNode<unknown> {
   return node instanceof SignalNode;
+}
+
+export function isEffect(node: CurrentNode): node is EffectNode {
+  return node instanceof EffectNode;
 }
 
 export function getCurretnNode(): CurrentNode {

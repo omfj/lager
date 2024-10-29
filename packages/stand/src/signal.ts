@@ -1,5 +1,6 @@
 import { ComputedNode } from "./computed.js";
-import { getCurretnNode, isComputed } from "./current.js";
+import { getCurretnNode, isComputed, isEffect } from "./current.js";
+import type { EffectNode } from "./effect.js";
 
 export type SignalNodeOptions<T> = {
   equalityFn?: (a: T, b: T) => boolean;
@@ -8,7 +9,7 @@ export type SignalNodeOptions<T> = {
 export class SignalNode<T> {
   #value: T;
   /** Nodes that listens to this node */
-  #consumers: Set<ComputedNode<unknown>> = new Set();
+  #consumers: Set<ComputedNode<unknown> | EffectNode> = new Set();
   #equalityFn: (a: T, b: T) => boolean = Object.is;
 
   constructor(value: T, opts: SignalNodeOptions<T>) {
@@ -21,7 +22,7 @@ export class SignalNode<T> {
 
   get value() {
     const currentNode = getCurretnNode();
-    if (isComputed(currentNode)) {
+    if (isComputed(currentNode) || isEffect(currentNode)) {
       this.#consumers.add(currentNode);
     }
 
