@@ -1,5 +1,10 @@
 import { ComputedNode } from "./computed.js";
-import { getCurretnNode, isComputed, isEffect } from "./current.js";
+import {
+  getCurretnNode,
+  getIsTracking,
+  isComputed,
+  isEffect,
+} from "./current.js";
 import type { EffectNode } from "./effect.js";
 
 export type SignalNodeOptions<T> = {
@@ -39,6 +44,11 @@ export class SignalNode<T> {
   }
 
   notify() {
+    const isTracking = getIsTracking();
+    if (!isTracking) {
+      return;
+    }
+
     for (const consumer of this.#consumers) {
       consumer.notify();
     }

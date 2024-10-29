@@ -9,6 +9,7 @@ type CurrentNode =
   | undefined;
 
 let currentNode: CurrentNode = undefined;
+let isTracking = true;
 
 export function isNone(node: CurrentNode): node is undefined {
   return node === undefined;
@@ -27,7 +28,19 @@ export function isEffect(node: CurrentNode): node is EffectNode {
 }
 
 export function getCurretnNode(): CurrentNode {
+  if (!isTracking) {
+    return undefined;
+  }
+
   return currentNode;
+}
+
+export function setIsTracking(value: boolean) {
+  isTracking = value;
+}
+
+export function getIsTracking() {
+  return isTracking;
 }
 
 export function setCurrentNode(node: CurrentNode) {
