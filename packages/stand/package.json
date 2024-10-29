@@ -1,0 +1,17 @@
+{
+  "name": "stand",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.4"
+  }
+}
