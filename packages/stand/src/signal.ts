@@ -1,13 +1,22 @@
 import { ComputedNode } from "./computed.js";
 import { getCurretnNode, isComputed } from "./current.js";
 
+export type SignalNodeOptions<T> = {
+  equalityFn?: (a: T, b: T) => boolean;
+};
+
 export class SignalNode<T> {
   #value: T;
   /** Nodes that listens to this node */
   #consumers: Set<ComputedNode<unknown>> = new Set();
+  #equalityFn: (a: T, b: T) => boolean = Object.is;
 
-  constructor(value: T) {
+  constructor(value: T, opts: SignalNodeOptions<T>) {
     this.#value = value;
+
+    if (opts.equalityFn) {
+      this.#equalityFn = opts.equalityFn;
+    }
   }
 
   get value() {
@@ -20,7 +29,7 @@ export class SignalNode<T> {
   }
 
   set value(value: T) {
-    if (Object.is(value, this.#value)) {
+    if (this.#equalityFn(value, this.#value)) {
       return;
     }
 
@@ -35,6 +44,6 @@ export class SignalNode<T> {
   }
 }
 
-export function signal<T>(value: T) {
-  return new SignalNode(value);
+export function signal<T>(value: T, opts: SignalNodeOptions<T> = {}) {
+  return new SignalNode(value, opts);
 }

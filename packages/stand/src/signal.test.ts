@@ -12,4 +12,14 @@ describe("SignalNode", () => {
     node.value = 2;
     expect(node.value).toBe(2);
   });
+
+  it("should use custom equality function", () => {
+    const node = signal([1, 2], {
+      equalityFn: (a, b) => a.length === b.length,
+    });
+
+    node.value = [2, 1];
+
+    expect(node.value).toEqual([1, 2]);
+  });
 });
