@@ -84,6 +84,9 @@ importers:
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
+      signal-polyfill:
+        specifier: ^0.1.2
+        version: 0.1.2
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
@@ -3760,7 +3763,6 @@ packages:
 
   /signal-polyfill@0.1.2:
     resolution: {integrity: sha512-HT9d+L9NMiTzMxb/tU2Baym6129ROyRETSjvchvSkQa7wN0+SrG/IUlsaBLqKn2c+4mlze6CgQBEvgBjxOpiaQ==}
-    dev: false
 
   /signal-utils@0.18.0(signal-polyfill@0.1.2):
     resolution: {integrity: sha512-qsUIfxv6pbXegnm6NCZ/+SzLlkE3jMvE5y9Nzj8nWifff3wUiteFOFgB/VdZT7oYQ1NpUuTQS0pfeiYRjEAFMg==}
