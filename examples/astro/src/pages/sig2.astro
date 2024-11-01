@@ -1,0 +1,60 @@
+<p id="num">Num:</p>
+
+<button id="inc" class="rounded-lg border px-2 py-1">Increment</button>
+<button id="dec" class="rounded-lg border px-2 py-1">Decrement</button>
+
+<div id="container"></div>
+
+<style>
+  #container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    background-color: #f0f0f0;
+  }
+</style>
+
+<script>
+  import { effect, signal, computed } from "stand";
+
+  const $num = document.getElementById("num") as HTMLParagraphElement;
+  const $container = document.getElementById("container") as HTMLDivElement;
+  const $incBtn = document.getElementById("inc") as HTMLButtonElement;
+  const $decBtn = document.getElementById("dec") as HTMLButtonElement;
+
+  const num = signal(1);
+
+  $incBtn.addEventListener("click", () => {
+    num.value = num.value + 1;
+  });
+
+  $decBtn.addEventListener("click", () => {
+    if (num.value <= 0) return;
+    num.value = num.value - 1;
+  });
+
+  const fibonacci = (n: number): number => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  };
+
+  const fib = computed(() => {
+    console.log("calculating fibonacci");
+    return fibonacci(num.value);
+  });
+
+  const updateContainer = () => {
+    const n = num.value;
+    $num.textContent = `Num: ${n}`;
+    $container.innerHTML = "";
+    Array.from({ length: 9 }).forEach(() => {
+      const $el = document.createElement("p");
+      $el.textContent = fib.value.toString();
+      $container.appendChild($el);
+    });
+  };
+
+  effect(() => {
+    updateContainer();
+  });
+</script>

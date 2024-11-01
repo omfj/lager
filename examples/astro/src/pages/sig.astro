@@ -1,0 +1,23 @@
+<main class="p-8">
+  <h1 class="text-4xl font-medium">Signals</h1>
+
+  <p id="count">0</p>
+  <button id="inc">Increment</button>
+</main>
+
+<script>
+  import { signal, effect } from "stand";
+
+  const $count = document.getElementById("count") as HTMLParagraphElement;
+  const $inc = document.getElementById("inc") as HTMLButtonElement;
+
+  const count = signal(0);
+
+  $inc.addEventListener("click", () => {
+    count.value = count.value + 1;
+  });
+
+  effect(() => {
+    $count.textContent = count.value.toString();
+  });
+</script>

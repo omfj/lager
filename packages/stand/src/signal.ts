@@ -11,7 +11,7 @@ export type SignalNodeOptions<T> = {
   equalityFn?: (a: T, b: T) => boolean;
 };
 
-export class SignalNode<T> {
+export class SignalNode<T = undefined> {
   #value: T;
   /** Nodes that listens to this node */
   #consumers: Set<ComputedNode<unknown> | EffectNode> = new Set();
@@ -55,6 +55,9 @@ export class SignalNode<T> {
   }
 }
 
-export function signal<T>(value: T, opts: SignalNodeOptions<T> = {}) {
+export function signal<T = undefined>(
+  value: T,
+  opts: SignalNodeOptions<T> = {}
+) {
   return new SignalNode(value, opts);
 }

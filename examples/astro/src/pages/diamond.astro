@@ -1,0 +1,41 @@
+<main class="p-8">
+  <h1 class="text-4xl font-medium">Diamond</h1>
+
+  <input id="input" type="number" class="px-2 py-1 rounded border" />
+
+  <p id="result"></p>
+</main>
+
+<script>
+  import { signal, computed, effect } from "stand";
+
+  /**
+   * Diamond problem
+   *
+   *   A
+   *  / \
+   * B  C
+   * \ /
+   *  D
+   */
+
+  const a = signal(0);
+  const b = computed(() => 0);
+  const c = computed(() => a.value * 2);
+  const d = computed(() => b.value + c.value + 4);
+
+  const $input = document.getElementById("input") as HTMLInputElement;
+  const $result = document.getElementById("result") as HTMLParagraphElement;
+
+  effect(() => {
+    $result.innerText = `D = ${d.value.toString()}`;
+  });
+
+  effect(() => {
+    $input.value = a.value.toString();
+  });
+
+  $input.addEventListener("input", () => {
+    a.value = parseInt($input.value);
+  });
+</script>
