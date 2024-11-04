@@ -1,11 +1,7 @@
 import { ComputedNode } from "./computed.js";
-import {
-  getCurretnNode,
-  getIsTracking,
-  isComputed,
-  isEffect,
-} from "./current.js";
+import { getCurrentNode, isComputed, isEffect } from "./current.js";
 import type { EffectNode } from "./effect.js";
+import { getIsTracking } from "./tracking.js";
 
 export type SignalNodeOptions<T> = {
   equalityFn?: (a: T, b: T) => boolean;
@@ -26,7 +22,7 @@ export class SignalNode<T = undefined> {
   }
 
   get value() {
-    const currentNode = getCurretnNode();
+    const currentNode = getCurrentNode();
     if (isComputed(currentNode) || isEffect(currentNode)) {
       this.#consumers.add(currentNode);
     }

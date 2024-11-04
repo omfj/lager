@@ -1,5 +1,5 @@
 import {
-  getCurretnNode,
+  getCurrentNode,
   isComputed,
   isEffect,
   setCurrentNode,
@@ -25,7 +25,7 @@ export class ComputedNode<T> {
   }
 
   get value() {
-    const currentNode = getCurretnNode();
+    const currentNode = getCurrentNode();
     if (isComputed(currentNode) || isEffect(currentNode)) {
       this.#consumers.add(currentNode);
     }

@@ -1,4 +1,4 @@
-import { setIsTracking } from "./current.js";
+import { setIsTracking } from "./tracking.js";
 
 export function untrack(fn: () => void) {
   setIsTracking(false);

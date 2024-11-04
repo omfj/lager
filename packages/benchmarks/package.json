@@ -1,0 +1,14 @@
+{
+  "name": "benchmarks",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "bench": "vitest bench"
+  },
+  "devDependencies": {
+    "jsdom": "25.0.1",
+    "signal-polyfill": "0.1.2",
+    "stand": "workspace:*",
+    "vitest": "2.1.4"
+  }
+}

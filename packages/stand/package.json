@@ -5,14 +5,11 @@
   "main": "./src/index.ts",
   "scripts": {
     "build": "tsup",
-    "test": "vitest",
-    "bench": "vitest bench"
+    "test": "vitest"
   },
   "devDependencies": {
-    "jsdom": "^25.0.1",
-    "signal-polyfill": "^0.1.2",
-    "tsup": "^8.3.5",
-    "typescript": "^5.5.4",
-    "vitest": "^2.1.4"
+    "tsup": "8.3.5",
+    "typescript": "5.5.4",
+    "vitest": "2.1.4"
   }
 }

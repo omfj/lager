@@ -1,6 +1,5 @@
 import { bench } from "vitest";
-import { signal } from "./signal.js";
-import { computed } from "./computed.js";
+import { signal, computed } from "stand";
 import { Signal } from "signal-polyfill";
 
 bench("computed", () => {
