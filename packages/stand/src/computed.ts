@@ -6,15 +6,22 @@ import {
 } from "./current.js";
 import type { EffectNode } from "./effect.js";
 
+type EqualityFn<T> = (a: T, b: T) => boolean;
+
 export class ComputedNode<T> {
   #computeFn: () => T;
   #value: T;
   /** Nodes that listens to this node */
   #consumers: Set<ComputedNode<unknown> | EffectNode> = new Set();
+  #equalityFn: EqualityFn<T> = Object.is;
 
-  constructor(computeFn: () => T) {
+  constructor(computeFn: () => T, equalityFn?: EqualityFn<T>) {
     this.#computeFn = computeFn;
     this.#value = this.compute();
+
+    if (equalityFn) {
+      this.#equalityFn = equalityFn;
+    }
   }
 
   get value() {
@@ -29,10 +36,15 @@ export class ComputedNode<T> {
   notify() {
     const prevValue = this.#value;
     this.#value = this.compute();
-    if (prevValue !== this.#value) {
-      for (const consumer of this.#consumers) {
-        consumer.notify();
-      }
+
+    const isSame = this.#equalityFn(prevValue, this.#value);
+
+    if (isSame) {
+      return;
+    }
+
+    for (const consumer of this.#consumers) {
+      consumer.notify();
     }
   }
 
@@ -44,6 +56,6 @@ export class ComputedNode<T> {
   }
 }
 
-export function computed<T>(computeFn: () => T) {
-  return new ComputedNode(computeFn);
+export function computed<T>(computeFn: () => T, equalityFn?: EqualityFn<T>) {
+  return new ComputedNode(computeFn, equalityFn);
 }
