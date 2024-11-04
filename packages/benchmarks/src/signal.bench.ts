@@ -7,7 +7,7 @@ bench("signal", () => {
   state.value = 1;
 });
 
-bench("polyfill - signal", () => {
+bench("signal - polyfill", () => {
   const state = new Signal.State(0);
   state.set(1);
 });

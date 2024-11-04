@@ -8,7 +8,7 @@ bench("computed", () => {
   s.value = 2;
 });
 
-bench("compouted - polyfill", () => {
+bench("computed - polyfill", () => {
   const s = new Signal.State(1);
   const c = new Signal.Computed(() => s.get() * 2);
   s.set(2);
