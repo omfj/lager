@@ -1,27 +1,30 @@
 import { setCurrentNode } from "./current.js";
 
+type CleanupFn = () => void;
+type EffectFn = () => void | CleanupFn;
+
 export class EffectNode {
-  #computeFn: () => void;
+  #effectFn: EffectFn;
 
-  constructor(computeFn: () => void) {
-    this.#computeFn = computeFn;
+  constructor(computeFn: EffectFn) {
+    this.#effectFn = computeFn;
 
-    this.compute();
+    this.run();
   }
 
   notify() {
-    this.compute();
+    this.run();
   }
 
-  private compute() {
+  private run() {
     setCurrentNode(this);
-    const value = this.#computeFn();
+    const value = this.#effectFn();
     setCurrentNode(undefined);
 
     return value;
   }
 }
 
-export function effect(computeFn: () => void) {
+export function effect(computeFn: EffectFn) {
   return new EffectNode(computeFn);
 }
