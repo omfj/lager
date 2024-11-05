@@ -1,9 +1,10 @@
 ---
 import CountDisplay from "../components/CountDisplay.astro";
 import CountQuery from "../components/CountQuery.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<div class="py-10 space-y-4">
+<BaseLayout>
   <CountQuery />
   <CountDisplay />
-</div>
+</BaseLayout>

@@ -3,19 +3,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout>
-  <h1 class="text-4xl font-medium">Signals</h1>
+  <h1 class="text-4xl font-medium">Glitch</h1>
 
   <div class="mt-4">
     <fieldset class="p-4 border rounded-lg">
-      <legend class="px-2">Counter</legend>
+      <legend class="px-2">Count</legend>
       <p id="count">0</p>
     </fieldset>
   </div>
 
   <div class="mt-4">
     <fieldset class="p-4 border rounded-lg">
-      <legend class="px-2">Doubled</legend>
-      <p id="double">0</p>
+      <legend class="px-2">Is odd</legend>
+      <p id="is-odd">0</p>
     </fieldset>
   </div>
 
@@ -31,11 +31,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   import { signal, effect, computed } from "stand";
 
   const $count = document.getElementById("count") as HTMLParagraphElement;
-  const $double = document.getElementById("double") as HTMLParagraphElement;
+  const $isOdd = document.getElementById("is-odd") as HTMLParagraphElement;
   const $inc = document.getElementById("inc") as HTMLButtonElement;
 
   const count = signal(0);
-  const doubled = computed(() => count.value * 2);
+  const evenOdd = computed(() => (count.value % 2 ? "Odd" : "Even"));
 
   $inc.addEventListener("click", () => {
     count.value = count.value + 1;
@@ -46,6 +46,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   });
 
   effect(() => {
-    $double.textContent = doubled.value.toString();
+    const text = `${count.value} is ${evenOdd.value}`;
+
+    console.log(text);
+
+    $isOdd.textContent = text;
   });
 </script>

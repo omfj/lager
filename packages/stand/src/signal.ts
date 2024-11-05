@@ -1,10 +1,12 @@
 import { ComputedNode } from "./computed.js";
-import { getCurrentNode, isComputed, isEffect } from "./current.js";
+import { getCurrentNode } from "./current.js";
+import { isComputed, isEffect } from "./checks.js";
 import type { EffectNode } from "./effect.js";
 import { getIsTracking } from "./tracking.js";
 
 export type SignalNodeOptions<T> = {
   equalityFn?: (a: T, b: T) => boolean;
+  label?: string;
 };
 
 export class SignalNode<T = undefined> {
@@ -13,11 +15,18 @@ export class SignalNode<T = undefined> {
   #consumers: Set<ComputedNode<unknown> | EffectNode> = new Set();
   #equalityFn: (a: T, b: T) => boolean = Object.is;
 
-  constructor(value: T, opts: SignalNodeOptions<T>) {
+  /** For debugging */
+  #label?: string;
+
+  constructor(value: T, opts: SignalNodeOptions<T> = {}) {
     this.#value = value;
 
     if (opts.equalityFn) {
       this.#equalityFn = opts.equalityFn;
+    }
+
+    if (opts.label) {
+      this.#label = opts.label;
     }
   }
 
@@ -51,9 +60,6 @@ export class SignalNode<T = undefined> {
   }
 }
 
-export function signal<T = undefined>(
-  value: T,
-  opts: SignalNodeOptions<T> = {}
-) {
+export function signal<T = undefined>(value: T, opts?: SignalNodeOptions<T>) {
   return new SignalNode(value, opts);
 }

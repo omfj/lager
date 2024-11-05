@@ -18,10 +18,10 @@ export class EffectNode {
 
   private run() {
     setCurrentNode(this);
-    const value = this.#effectFn();
+    const cleanUpFn = this.#effectFn();
     setCurrentNode(undefined);
 
-    return value;
+    return cleanUpFn;
   }
 }
 

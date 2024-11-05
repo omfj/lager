@@ -1,9 +1,15 @@
-<p id="num">Num:</p>
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
 
-<button id="inc" class="rounded-lg border px-2 py-1">Increment</button>
-<button id="dec" class="rounded-lg border px-2 py-1">Decrement</button>
+<BaseLayout>
+  <p id="num">Num:</p>
 
-<div id="container"></div>
+  <button id="inc" class="rounded-lg border px-2 py-1">Increment</button>
+  <button id="dec" class="rounded-lg border px-2 py-1">Decrement</button>
+
+  <div id="container"></div>
+</BaseLayout>
 
 <style>
   #container {

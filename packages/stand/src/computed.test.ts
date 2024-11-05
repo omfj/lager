@@ -27,10 +27,9 @@ describe("Computed", () => {
 
   it("should use custom equality function", () => {
     const s = signal([1, 2]);
-    const c1 = computed(
-      () => s.value,
-      (a, b) => a.length === b.length
-    );
+    const c1 = computed(() => s.value, {
+      equalityFn: (a, b) => a.length === b.length,
+    });
     const c2 = computed(() => c1.value);
     const spy = vi.spyOn(c1, "notify");
 
@@ -40,5 +39,19 @@ describe("Computed", () => {
 
     expect(c2.value).toStrictEqual([1, 2]);
     expect(spy).toHaveBeenCalledOnce();
+  });
+
+  it("should not glitch", () => {
+    const s = signal(0);
+    const c1 = computed(() => (s.value % 2 ? "odd" : "even"));
+    const c2 = computed(() => `${s.value} is ${c1.value}`, {
+      label: "c2",
+    });
+
+    expect(c2.value).toBe("0 is even");
+
+    s.value = 1;
+
+    expect(c2.value).toBe("1 is odd");
   });
 });

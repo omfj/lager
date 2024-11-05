@@ -3,6 +3,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout>
-  <a class="block hover:underline text-blue-500" href="/query">Query</a>
-  <a class="block hover:underline text-blue-500" href="/fib">Fibonacci</a>
+  <h1 class="text-2xl font-bold mb-4">Examples</h1>
+
+  <a
+    class="block hover:bg-blue-500 hover:text-white text-blue-500"
+    href="/query">Query</a
+  >
+  <a class="block hover:bg-blue-500 hover:text-white text-blue-500" href="/fib"
+    >Fibonacci - with <pre class="inline-block">signal-polyfill</pre></a
+  >
+  <a class="block hover:bg-blue-500 hover:text-white text-blue-500" href="/fib2"
+    >Fibonacci - with <pre class="inline-block">stand</pre></a
+  >
+  <a
+    class="block hover:bg-blue-500 hover:text-white text-blue-500"
+    href="/glitch">Glitch</a
+  >
+  <a
+    class="block hover:bg-blue-500 hover:text-white text-blue-500"
+    href="/diamond">Diamond</a
+  >
+  <a class="block hover:bg-blue-500 hover:text-white text-blue-500" href="/sig"
+    >Counter - with <pre
+      class="inline-block group-hover:underline">stand</pre></a
+  >
 </BaseLayout>
