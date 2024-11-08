@@ -1,4 +1,7 @@
-export const CLEAN = 0;
-export const DIRTY = 1;
+export const State = {
+  CLEAN: 0,
+  CHECK: 1,
+  DIRTY: 2,
+};
 
-export type State = typeof CLEAN | typeof DIRTY;
+export type State = (typeof State)[keyof typeof State];

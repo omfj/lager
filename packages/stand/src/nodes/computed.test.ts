@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { computed } from "./computed.js";
 import { signal } from "./signal.js";
 
-describe("Computed", () => {
+describe("ComputedNode", () => {
   it("should listen to changes", () => {
     const s = signal(1);
     const c = computed(() => s.value * 2);
@@ -28,7 +28,7 @@ describe("Computed", () => {
   it("should use custom equality function", () => {
     const s = signal([1, 2]);
     const c1 = computed(() => s.value, {
-      equalityFn: (a, b) => a.length === b.length,
+      isEqual: (a, b) => a.length === b.length,
     });
     const c2 = computed(() => c1.value);
     const spy = vi.spyOn(c1, "notify");
@@ -44,9 +44,7 @@ describe("Computed", () => {
   it("should not glitch", () => {
     const s = signal(0);
     const c1 = computed(() => (s.value % 2 ? "odd" : "even"));
-    const c2 = computed(() => `${s.value} is ${c1.value}`, {
-      label: "c2",
-    });
+    const c2 = computed(() => `${s.value} is ${c1.value}`);
 
     expect(c2.value).toBe("0 is even");
 
