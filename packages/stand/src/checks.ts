@@ -1,21 +1,21 @@
-import { ComputedNode } from "./computed.js";
-import type { CurrentNode } from "./current.js";
-import { EffectNode } from "./effect.js";
-import { SignalNode } from "./signal.js";
 import type { AnyComputed, AnySignal } from "./types.js";
+import type { ActiveNode } from "./graph/active.js";
+import { ComputedNode } from "./nodes/computed.js";
+import { EffectNode } from "./nodes/effect.js";
+import { SignalNode } from "./nodes/signal.js";
 
-export function isComputed(node: CurrentNode): node is AnyComputed {
+export function isComputedNode(node: ActiveNode): node is AnyComputed {
   return node instanceof ComputedNode;
 }
 
-export function isSignal(node: CurrentNode): node is AnySignal {
+export function isSignalNode(node: ActiveNode): node is AnySignal {
   return node instanceof SignalNode;
 }
 
-export function isEffect(node: CurrentNode): node is EffectNode {
+export function isEffectNode(node: ActiveNode): node is EffectNode {
   return node instanceof EffectNode;
 }
 
-export function isNone(node: CurrentNode): node is undefined {
+export function isNone(node: ActiveNode): node is undefined {
   return node === undefined;
 }

@@ -1,38 +1,31 @@
 import { ComputedNode } from "./computed.js";
-import { getCurrentNode } from "./current.js";
-import { isComputed, isEffect } from "./checks.js";
+import { getActiveNode } from "../graph/active.js";
+import { isComputedNode, isEffectNode } from "../checks.js";
 import type { EffectNode } from "./effect.js";
-import { getIsTracking } from "./tracking.js";
+import { getIsTracking } from "../graph/tracking.js";
+import type { AnyComputed } from "../types.js";
 
 export type SignalNodeOptions<T> = {
-  equalityFn?: (a: T, b: T) => boolean;
+  isEqual?: (a: T, b: T) => boolean;
   label?: string;
 };
 
 export class SignalNode<T = undefined> {
   #value: T;
-  /** Nodes that listens to this node */
   #consumers: Set<ComputedNode<unknown> | EffectNode> = new Set();
-  #equalityFn: (a: T, b: T) => boolean = Object.is;
-
-  /** For debugging */
-  #label?: string;
+  #isEqual: (a: T, b: T) => boolean = Object.is;
 
   constructor(value: T, opts: SignalNodeOptions<T> = {}) {
     this.#value = value;
 
-    if (opts.equalityFn) {
-      this.#equalityFn = opts.equalityFn;
-    }
-
-    if (opts.label) {
-      this.#label = opts.label;
+    if (opts.isEqual) {
+      this.#isEqual = opts.isEqual;
     }
   }
 
   get value() {
-    const currentNode = getCurrentNode();
-    if (isComputed(currentNode) || isEffect(currentNode)) {
+    const currentNode = getActiveNode();
+    if (isComputedNode(currentNode) || isEffectNode(currentNode)) {
       this.#consumers.add(currentNode);
     }
 
@@ -40,15 +33,19 @@ export class SignalNode<T = undefined> {
   }
 
   set value(value: T) {
-    if (this.#equalityFn(value, this.#value)) {
+    if (this.#isEqual(value, this.#value)) {
       return;
     }
 
     this.#value = value;
-    this.notify();
+    this.notifyConsumers();
   }
 
-  notify() {
+  removeConsumer(consumer: AnyComputed | EffectNode) {
+    this.#consumers.delete(consumer);
+  }
+
+  private notifyConsumers() {
     const isTracking = getIsTracking();
     if (!isTracking) {
       return;

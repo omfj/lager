@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { untrack } from "./untrack.js";
-import { signal } from "./signal.js";
-import { computed } from "./computed.js";
+import { signal } from "./nodes/signal.js";
+import { computed } from "./nodes/computed.js";
 
 describe("Untrack", () => {
   it("should not run the effect", () => {
