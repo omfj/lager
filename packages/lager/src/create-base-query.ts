@@ -64,7 +64,7 @@ export function createBaseQuery<
     observer.getOptimisticResult(defaultedOptionsSignal.get())
   );
 
-  effect(() => {
+  const cleanupFn = effect(() => {
     const defaultedOptions = defaultedOptionsSignal.get();
     observer.setOptions(defaultedOptions, {
       // Do not notify on updates because of changes in the options because
@@ -75,8 +75,7 @@ export function createBaseQuery<
     resultSignal.set(observer.getOptimisticResult(defaultedOptions));
   });
 
-  // observer.trackResult is not used as this optimization is not needed for Angular
-  observer.subscribe(
+  const unsubscribe = observer.subscribe(
     notifyManager.batchCalls((state: QueryObserverResult<TData, TError>) => {
       if (state.isError && !state.isFetching) {
         throw state.error;
@@ -85,8 +84,17 @@ export function createBaseQuery<
     })
   );
 
-  return signalProxy(resultSignal) as unknown as CreateBaseQueryResult<
-    TData,
-    TError
-  >;
+  const cleanup = () => {
+    unsubscribe();
+    cleanupFn();
+    observer.destroy();
+  };
+
+  return {
+    ...(signalProxy(resultSignal) as unknown as CreateBaseQueryResult<
+      TData,
+      TError
+    >),
+    cleanup,
+  };
 }

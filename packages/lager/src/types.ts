@@ -74,7 +74,9 @@ export type CreateBaseQueryResult<
   TError = DefaultError,
   TState = QueryObserverResult<TData, TError>
 > = BaseQueryNarrowing<TData, TError> &
-  MapToSignals<OmitKeyof<TState, keyof BaseQueryNarrowing, "safely">>;
+  MapToSignals<OmitKeyof<TState, keyof BaseQueryNarrowing, "safely">> & {
+    cleanup: () => void;
+  };
 
 export interface SolidMutationOptions<
   TData = unknown,
