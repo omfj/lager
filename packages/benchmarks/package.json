@@ -10,5 +10,9 @@
     "signal-polyfill": "0.1.2",
     "stand": "workspace:*",
     "vitest": "2.1.4"
+  },
+  "dependencies": {
+    "@reactively/core": "^0.0.8",
+    "@vue/reactivity": "^3.5.12"
   }
 }
