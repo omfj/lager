@@ -75,7 +75,7 @@ export type CreateBaseQueryResult<
   TState = QueryObserverResult<TData, TError>
 > = BaseQueryNarrowing<TData, TError> &
   MapToSignals<OmitKeyof<TState, keyof BaseQueryNarrowing, "safely">> & {
-    cleanup: () => void;
+    dispose: () => void;
   };
 
 export interface SolidMutationOptions<
@@ -128,4 +128,6 @@ export type CreateMutationResult<
   TError = DefaultError,
   TVariables = unknown,
   TContext = unknown
-> = CreateBaseMutationResult<TData, TError, TVariables, TContext>;
+> = CreateBaseMutationResult<TData, TError, TVariables, TContext> & {
+  dispose: () => void;
+};

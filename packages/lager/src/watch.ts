@@ -19,10 +19,10 @@ const processPending = () => {
   w.watch();
 };
 
-export type EffectCallback = () => unknown | (() => unknown);
+export type WatchCallback = () => unknown | (() => unknown);
 
-export const effect = (callback: EffectCallback) => {
-  let cleanup: ReturnType<EffectCallback> | undefined;
+export const watch = (callback: WatchCallback) => {
+  let cleanup: ReturnType<WatchCallback> | undefined;
 
   const computed = new Signal.Computed(() => {
     typeof cleanup === "function" && cleanup();

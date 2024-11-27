@@ -7,7 +7,7 @@ import { MutationObserver } from "@tanstack/query-core";
 import { Signal } from "signal-polyfill";
 import { CreateMutateFunction, CreateMutationResult } from "./types";
 import { signalProxy } from "./signal-proxy";
-import { effect } from "./effect";
+import { watch } from "./watch";
 
 export function createMutation<
   TData = unknown,
@@ -23,7 +23,7 @@ export function createMutation<
     options
   );
 
-  effect(() => {
+  const dispose = watch(() => {
     observer.setOptions(options);
   });
 
@@ -38,6 +38,7 @@ export function createMutation<
     ...observer.getCurrentResult(),
     mutate,
     mutateAsync: observer.mutate,
+    dispose,
   });
 
   return signalProxy(result) as unknown as CreateMutationResult<

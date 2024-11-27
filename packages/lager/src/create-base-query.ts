@@ -16,7 +16,7 @@ import {
   QueryObserver,
   type QueryObserverResult,
 } from "@tanstack/query-core";
-import { effect } from "./effect";
+import { watch } from "./watch";
 import {
   type CreateBaseQueryOptions,
   type CreateBaseQueryResult,
@@ -64,7 +64,7 @@ export function createBaseQuery<
     observer.getOptimisticResult(defaultedOptionsSignal.get())
   );
 
-  const cleanupFn = effect(() => {
+  const disposeWatch = watch(() => {
     const defaultedOptions = defaultedOptionsSignal.get();
     observer.setOptions(defaultedOptions, {
       // Do not notify on updates because of changes in the options because
@@ -84,9 +84,9 @@ export function createBaseQuery<
     })
   );
 
-  const cleanup = () => {
+  const dispose = () => {
     unsubscribe();
-    cleanupFn();
+    disposeWatch();
     observer.destroy();
   };
 
@@ -95,6 +95,6 @@ export function createBaseQuery<
       TData,
       TError
     >),
-    cleanup,
+    dispose,
   };
 }
